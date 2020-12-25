@@ -17,7 +17,11 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: descheduler
+<<<<<<< HEAD
           image: ccr.ccs.tencentyun.com/eqxiu/descheduler:v0.19.0
+=======
+          image: k8s.gcr.io/descheduler/descheduler:v0.20.0
+>>>>>>> f54df67d11c730d750eb34c8b585f18cd6029f8e
           volumeMounts:
           - mountPath: /policy-dir
             name: policy-volume
@@ -28,6 +32,10 @@ spec:
             - "/policy-dir/policy.yaml"
             - "--v"
             - "3"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
       restartPolicy: "Never"
       serviceAccountName: descheduler-sa
       volumes:

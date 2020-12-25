@@ -70,13 +70,14 @@ func RunDeschedulerStrategies(ctx context.Context, rs *options.DeschedulerServer
 	sharedInformerFactory.WaitForCacheSync(stopChannel)
 
 	strategyFuncs := map[string]strategyFunction{
-		"RemoveDuplicates":                        strategies.RemoveDuplicatePods,
-		"LowNodeUtilization":                      strategies.LowNodeUtilization,
-		"RemovePodsViolatingInterPodAntiAffinity": strategies.RemovePodsViolatingInterPodAntiAffinity,
-		"RemovePodsViolatingNodeAffinity":         strategies.RemovePodsViolatingNodeAffinity,
-		"RemovePodsViolatingNodeTaints":           strategies.RemovePodsViolatingNodeTaints,
-		"RemovePodsHavingTooManyRestarts":         strategies.RemovePodsHavingTooManyRestarts,
-		"PodLifeTime":                             strategies.PodLifeTime,
+		"RemoveDuplicates":                            strategies.RemoveDuplicatePods,
+		"LowNodeUtilization":                          strategies.LowNodeUtilization,
+		"RemovePodsViolatingInterPodAntiAffinity":     strategies.RemovePodsViolatingInterPodAntiAffinity,
+		"RemovePodsViolatingNodeAffinity":             strategies.RemovePodsViolatingNodeAffinity,
+		"RemovePodsViolatingNodeTaints":               strategies.RemovePodsViolatingNodeTaints,
+		"RemovePodsHavingTooManyRestarts":             strategies.RemovePodsHavingTooManyRestarts,
+		"PodLifeTime":                                 strategies.PodLifeTime,
+		"RemovePodsViolatingTopologySpreadConstraint": strategies.RemovePodsViolatingTopologySpreadConstraint,
 	}
 
 	nodeSelector := rs.NodeSelector
@@ -95,7 +96,7 @@ func RunDeschedulerStrategies(ctx context.Context, rs *options.DeschedulerServer
 	}
 
 	wait.Until(func() {
-		nodes, err := nodeutil.ReadyNodes(ctx, rs.Client, nodeInformer, nodeSelector, stopChannel)
+		nodes, err := nodeutil.ReadyNodes(ctx, rs.Client, nodeInformer, nodeSelector)
 		if err != nil {
 			klog.V(1).InfoS("Unable to get ready nodes", "err", err)
 			close(stopChannel)
